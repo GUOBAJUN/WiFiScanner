@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WiFi Scanner</string>
+    <string name="wlan_detail_info">详细信息</string>
+</resources>
