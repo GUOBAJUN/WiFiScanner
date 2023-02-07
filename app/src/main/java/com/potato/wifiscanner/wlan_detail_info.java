@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -25,18 +27,46 @@ import java.util.Date;
 
 public class wlan_detail_info extends AppCompatActivity {
 
-    Handler handler;
-    TextView textView;
+    TextView wifiLevel;
+    TextView realTime;
+    private WifiManager wifiMgr;
+    private boolean isUpdated = false;
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+                if (ActivityCompat.checkSelfPermission(wlan_detail_info.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(wlan_detail_info.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
+                    return;
+                }
+                List<ScanResult> results = wifiMgr.getScanResults();
+                isUpdated = false;
+                //更新WiFi强度
+                boolean flag = false;
+                String targetSSID = wlan_detail_info.this.getIntent().getStringExtra("SSID");
+                for(ScanResult result : results) {
+                    if (Objects.equals(result.SSID, targetSSID)) {
 
+                        wifiLevel.setText("level: " + result.level);
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag)
+                    wifiLevel.setText("该WiFi已超出信号范围");
+            }
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_wlan_info);
         Intent intent = getIntent();
-        textView = findViewById(R.id.wifi_ssid);
+        wifiLevel = findViewById(R.id.wifi_ssid);
         String target_ssid = intent.getStringExtra("SSID");
-        textView.setText(target_ssid);
-        textView = findViewById(R.id.wifi_level);
+        wifiLevel.setText(target_ssid);
+        wifiLevel = findViewById(R.id.wifi_level);
+        realTime = findViewById(R.id.real_time);
 
         // 为“返回”按钮添加事件处理函数
         Button button_back = findViewById(R.id.button_back);
@@ -46,49 +76,53 @@ public class wlan_detail_info extends AppCompatActivity {
                 wlan_detail_info.this.finish();
             }
         });
+        // 注册广播接收器
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        registerReceiver(receiver, intentFilter);
 
-        //动态刷新信号强度和时间戳
-        handler = new Handler(msg -> {
-            if(msg.what == 1) {
-                Date date = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                textView.setText(msg.getData().getInt("level")+"\t" + dateFormat.format(date));
-            }
-            return false;
-        });
-
+        wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        //检查WiFi扫描列表是否更新
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = getIntent();
-                String target_ssid = intent.getStringExtra("SSID");
-                WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                if (ActivityCompat.checkSelfPermission(wlan_detail_info.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(wlan_detail_info.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
-                    return;
-                }
-                List<ScanResult> results;
-                while (true) {
+                while (!isUpdated) {
+                    wifiMgr.startScan(); // 旧版api，不知道新版Android怎么出发WiFi扫描
+                    isUpdated = true;
                     try {
-                        Message msg = handler.obtainMessage();
-                        msg.what=1;
-                        Bundle bundle = new Bundle();
-                        results = wifiMgr.getScanResults();
-                        for(int i = 0 ; i < results.size(); i++) {
-                            if (Objects.equals(results.get(i).SSID, target_ssid)) {
-                                bundle.putInt("level",results.get(i).level);
-                                break;
-                            }
-                        }
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                        Thread.sleep(1000);
-                    }catch (InternalError | InterruptedException e){
-                            throw new RuntimeException(e);
+                        Thread.sleep(2000);
+                    }catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
         }).start();
+
+        //时间更新
+        Handler handler = new Handler(msg -> {
+            if(msg.what == 1) {
+                Date date = new Date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                realTime.setText(dateFormat.format(new Date()));
+            }
+            return false;
+        });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    Message msg = handler.obtainMessage();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).start();
+        
     }
 
 }

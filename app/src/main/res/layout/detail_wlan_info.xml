@@ -25,7 +25,14 @@
         android:gravity="center"
         android:textColor="@color/design_default_color_on_secondary"
         android:textSize="20sp" />
-
+    <TextView
+        android:id="@+id/real_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:textColor="@color/design_default_color_on_secondary"
+        android:textSize="20sp" />
     <Button
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
