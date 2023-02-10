@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 wifi_list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // 为列表添加点击事件处理函数，切换到WiFi详情界面
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        startActivity(new Intent(MainActivity.this, wlan_detail_info.class).putExtra("SSID",  (String)wifi_list.getAdapter().getItem(position)));
+                        startActivity(new Intent(MainActivity.this, wlan_detail_info.class).putExtra("WiFi_Info",  (ScanResult)(wifi_list.getAdapter().getItem(position))));
                     }
                 });
             }
@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ListView wifi_list = findViewById(R.id.wifi_list);
                 WifiInfoAdapter wifiInfoAdapter = (WifiInfoAdapter) wifi_list.getAdapter();
-                wifiInfoAdapter.clear();
+                if (wifiInfoAdapter != null)
+                    wifiInfoAdapter.clear();
             }
         });
     }

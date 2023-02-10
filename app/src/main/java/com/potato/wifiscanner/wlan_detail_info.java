@@ -43,9 +43,11 @@ public class wlan_detail_info extends AppCompatActivity {
                 isUpdated = false;
                 //更新WiFi强度
                 boolean flag = false;
-                String targetSSID = wlan_detail_info.this.getIntent().getStringExtra("SSID");
+                ScanResult scanResult = wlan_detail_info.this.getIntent().getParcelableExtra("WiFi_Info");
+                String target_ssid = scanResult.SSID;
+                String target_bssid = scanResult.BSSID;
                 for(ScanResult result : results) {
-                    if (Objects.equals(result.SSID, targetSSID)) {
+                    if (Objects.equals(result.SSID, target_ssid) && Objects.equals(result.BSSID, target_bssid)) {
 
                         wifiLevel.setText("level: " + result.level);
                         flag = true;
@@ -63,9 +65,12 @@ public class wlan_detail_info extends AppCompatActivity {
         setContentView(R.layout.detail_wlan_info);
         Intent intent = getIntent();
         wifiLevel = findViewById(R.id.wifi_ssid);
-        String target_ssid = intent.getStringExtra("SSID");
+        ScanResult scanResult = (ScanResult) intent.getParcelableExtra("WiFi_Info");
+        String target_ssid = scanResult.SSID;
+        String target_bssid = scanResult.BSSID;
         wifiLevel.setText(target_ssid);
         wifiLevel = findViewById(R.id.wifi_level);
+        wifiLevel.setText("level: " + scanResult.level);
         realTime = findViewById(R.id.real_time);
 
         // 为“返回”按钮添加事件处理函数
@@ -87,7 +92,7 @@ public class wlan_detail_info extends AppCompatActivity {
             @Override
             public void run() {
                 while (!isUpdated) {
-                    wifiMgr.startScan(); // 旧版api，不知道新版Android怎么出发WiFi扫描
+                    wifiMgr.startScan(); // 旧版api，不知道新版Android怎么触发WiFi扫描
                     isUpdated = true;
                     try {
                         Thread.sleep(2000);

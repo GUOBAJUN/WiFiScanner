@@ -28,7 +28,7 @@ public class WifiInfoAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return data.get(position).SSID;
+        return data.get(position);
     }
 
     @Override
