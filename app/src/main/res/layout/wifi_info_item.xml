@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/wifi_name"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:textSize="20sp"
         android:textColor="@color/design_default_color_primary"
         android:gravity="center"/>

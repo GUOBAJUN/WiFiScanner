@@ -42,7 +42,7 @@ public class WifiInfoAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.wifi_info_item, parent, false);
         }
         TextView textView = convertView.findViewById(R.id.wifi_name);
-        textView.setText(data.get(position).SSID+" "+ data.get(position).level);
+        textView.setText(data.get(position).SSID+"\t"+ data.get(position).level);
         return convertView;
     }
 
