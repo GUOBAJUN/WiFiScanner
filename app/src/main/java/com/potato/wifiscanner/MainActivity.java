@@ -26,38 +26,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button button_scan = findViewById(R.id.button_scan);
         // 添加“扫描”按钮事件处理函数
-        button_scan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Permission Check
-                WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
-                    return;
-                }
-                List<ScanResult> results = wifiMgr.getScanResults(); // 获取扫描结果
-                results.sort(Comparator.comparingInt(a -> -a.level)); // 对结果按照信号由强到弱排序
-                // 修改列表
-                ListView wifi_list = findViewById(R.id.wifi_list);
-                wifi_list.setAdapter(new WifiInfoAdapter(results, MainActivity.this));
-                wifi_list.setOnItemClickListener(new AdapterView.OnItemClickListener() { // 为列表添加点击事件处理函数，切换到WiFi详情界面
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        startActivity(new Intent(MainActivity.this, wlan_detail_info.class).putExtra("WiFi_Info",  (ScanResult)(wifi_list.getAdapter().getItem(position))));
-                    }
-                });
+        button_scan.setOnClickListener(v -> {
+            //Permission Check
+            WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
+                return;
             }
+            List<ScanResult> results = wifiMgr.getScanResults(); // 获取扫描结果
+            results.sort(Comparator.comparingInt(a -> -a.level)); // 对结果按照信号由强到弱排序
+            // 修改列表
+            ListView wifi_list = findViewById(R.id.wifi_list);
+            wifi_list.setAdapter(new WifiInfoAdapter(results, MainActivity.this));
+
+            // 为列表添加点击事件处理函数，切换到WiFi详情界面
+            wifi_list.setOnItemClickListener((parent, view, position, id) -> startActivity(new Intent(MainActivity.this, wlan_detail_info.class).putExtra("WiFi_Info",  (ScanResult)(wifi_list.getAdapter().getItem(position)))));
         });
         //添加“清除”按钮事件处理函数
         Button button_clean = findViewById(R.id.button_clean);
-        button_clean.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListView wifi_list = findViewById(R.id.wifi_list);
-                WifiInfoAdapter wifiInfoAdapter = (WifiInfoAdapter) wifi_list.getAdapter();
-                if (wifiInfoAdapter != null)
-                    wifiInfoAdapter.clear();
-            }
+        button_clean.setOnClickListener(v -> {
+            ListView wifi_list = findViewById(R.id.wifi_list);
+            WifiInfoAdapter wifiInfoAdapter = (WifiInfoAdapter) wifi_list.getAdapter();
+            if (wifiInfoAdapter != null)
+                wifiInfoAdapter.clear();
         });
     }
 }

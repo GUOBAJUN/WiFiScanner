@@ -67,7 +67,6 @@ public class wlan_detail_info extends AppCompatActivity {
         wifiLevel = findViewById(R.id.wifi_ssid);
         ScanResult scanResult = (ScanResult) intent.getParcelableExtra("WiFi_Info");
         String target_ssid = scanResult.SSID;
-        String target_bssid = scanResult.BSSID;
         wifiLevel.setText(target_ssid);
         wifiLevel = findViewById(R.id.wifi_level);
         wifiLevel.setText("level: " + scanResult.level);
@@ -75,12 +74,7 @@ public class wlan_detail_info extends AppCompatActivity {
 
         // 为“返回”按钮添加事件处理函数
         Button button_back = findViewById(R.id.button_back);
-        button_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wlan_detail_info.this.finish();
-            }
-        });
+        button_back.setOnClickListener(v -> wlan_detail_info.this.finish());
         // 注册广播接收器
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
