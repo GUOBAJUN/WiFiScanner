@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -22,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Date;
 
@@ -82,17 +82,14 @@ public class wlan_detail_info extends AppCompatActivity {
 
         wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         //检查WiFi扫描列表是否更新
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!isUpdated) {
-                    wifiMgr.startScan(); // 旧版api，不知道新版Android怎么触发WiFi扫描
-                    isUpdated = true;
-                    try {
-                        Thread.sleep(2000);
-                    }catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+        new Thread(() -> {
+            while (!isUpdated) {
+                wifiMgr.startScan(); // 旧版api，不知道新版Android怎么触发WiFi扫描
+                isUpdated = true;
+                try {
+                    Thread.sleep(2000);
+                }catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }).start();
@@ -100,24 +97,20 @@ public class wlan_detail_info extends AppCompatActivity {
         //时间更新
         Handler handler = new Handler(msg -> {
             if(msg.what == 1) {
-                Date date = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
                 realTime.setText(dateFormat.format(new Date()));
             }
             return false;
         });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    Message msg = handler.obtainMessage();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+        new Thread(() -> {
+            while (true) {
+                Message msg = handler.obtainMessage();
+                msg.what = 1;
+                handler.sendMessage(msg);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }).start();
