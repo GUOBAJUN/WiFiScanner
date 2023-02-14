@@ -37,7 +37,6 @@ public class wlan_detail_info extends AppCompatActivity {
             if(intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 if (ActivityCompat.checkSelfPermission(wlan_detail_info.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(wlan_detail_info.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
-                    return;
                 }
                 List<ScanResult> results = wifiMgr.getScanResults();
                 isUpdated = false;
