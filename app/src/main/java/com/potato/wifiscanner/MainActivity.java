@@ -10,10 +10,9 @@ import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.Comparator;
 import java.util.List;
@@ -31,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
             WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},  1);
+            }
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(MainActivity.this, "无定位权限，无法获取WiFi信息", Toast.LENGTH_SHORT).show();
                 return;
             }
+            button_scan.setText("刷新");
             List<ScanResult> results = wifiMgr.getScanResults(); // 获取扫描结果
             results.sort(Comparator.comparingInt(a -> -a.level)); // 对结果按照信号由强到弱排序
             // 修改列表
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         //添加“清除”按钮事件处理函数
         Button button_clean = findViewById(R.id.button_clean);
         button_clean.setOnClickListener(v -> {
+            button_scan.setText("扫描");
             ListView wifi_list = findViewById(R.id.wifi_list);
             WifiInfoAdapter wifiInfoAdapter = (WifiInfoAdapter) wifi_list.getAdapter();
             if (wifiInfoAdapter != null)
