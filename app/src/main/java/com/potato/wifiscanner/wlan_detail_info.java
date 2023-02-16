@@ -30,6 +30,7 @@ public class wlan_detail_info extends AppCompatActivity {
 
     TextView wifiLevel;
     TextView realTime;
+    TextView updateTime;
     private WifiManager wifiMgr;
     private boolean isUpdated = false;
     @SuppressLint("SetTextI18n")
@@ -49,7 +50,6 @@ public class wlan_detail_info extends AppCompatActivity {
                 String target_bssid = scanResult.BSSID;
                 for(ScanResult result : results) {
                     if (Objects.equals(result.SSID, target_ssid) && Objects.equals(result.BSSID, target_bssid)) {
-
                         wifiLevel.setText("level: " + result.level);
                         flag = true;
                         break;
@@ -57,6 +57,7 @@ public class wlan_detail_info extends AppCompatActivity {
                 }
                 if(!flag)
                     wifiLevel.setText("该WiFi已超出信号范围");
+                updateTime.setText("Last update: " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(new Date())));
             }
         }
     };
@@ -73,6 +74,8 @@ public class wlan_detail_info extends AppCompatActivity {
         wifiLevel = findViewById(R.id.wifi_level);
         wifiLevel.setText("level: " + scanResult.level);
         realTime = findViewById(R.id.real_time);
+        updateTime = findViewById(R.id.update_time);
+        updateTime.setText("Last update: " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(new Date())));
 
         // 为“返回”按钮添加事件处理函数
         Button button_back = findViewById(R.id.button_back);

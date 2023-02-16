@@ -12,9 +12,10 @@
         android:id="@+id/wifi_ssid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="100dp"
-        android:textSize="35sp"/>
+        android:gravity="center"
+        android:textSize="35sp"
+        tools:text="NUDT-WLAN" />
 
     <TextView
         android:id="@+id/wifi_level"
@@ -22,14 +23,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        tools:text="level: -19" />
+
+    <TextView
+        android:id="@+id/update_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        tools:text="Last Updated: 2023-2-16 22:31:55"/>
+
     <TextView
         android:id="@+id/real_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        tools:text="2023-2-16 22:31:57" />
+
     <Button
         android:id="@+id/button_back"
         android:layout_width="wrap_content"

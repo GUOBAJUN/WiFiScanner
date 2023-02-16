@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class WifiInfoAdapter extends BaseAdapter {
-    private final List<ScanResult> data;
+    private List<ScanResult> data;
     private final Context context;
 
     public WifiInfoAdapter(List<ScanResult> data, Context context) {
@@ -57,26 +57,25 @@ public class WifiInfoAdapter extends BaseAdapter {
     private static class ViewHolder {
         private final TextView tv_ssid;
         private final TextView tv_level;
-
         private ViewHolder(TextView textView, TextView tv_level) {
             this.tv_ssid = textView;
             this.tv_level = tv_level;
         }
-
-
         public TextView getTv_ssid() {
             return tv_ssid;
         }
-
-
         public TextView getTv_level() {
             return tv_level;
         }
 
     }
-
     public void clear() {
         data.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setData(List<ScanResult> data) {
+        this.data = data;
         notifyDataSetChanged();
     }
 }
