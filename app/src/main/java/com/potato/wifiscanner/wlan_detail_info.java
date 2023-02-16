@@ -83,7 +83,6 @@ public class wlan_detail_info extends AppCompatActivity {
         //检查WiFi扫描列表是否更新
         new Thread(() -> {
             while (!isUpdated) {
-                wifiMgr.startScan(); // 旧版api，不知道新版Android怎么触发WiFi扫描
                 isUpdated = true;
                 try {
                     Thread.sleep(2000);

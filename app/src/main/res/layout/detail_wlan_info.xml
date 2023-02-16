@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="100dp"
-        android:textColor="@color/design_default_color_primary"
         android:textSize="35sp"/>
 
     <TextView
@@ -23,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:textColor="@color/design_default_color_secondary"
         android:textSize="20sp" />
     <TextView
         android:id="@+id/real_time"
@@ -31,7 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:textColor="@color/design_default_color_secondary"
         android:textSize="20sp" />
     <Button
         android:id="@+id/button_back"

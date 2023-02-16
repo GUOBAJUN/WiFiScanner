@@ -1,9 +1,7 @@
 package com.potato.wifiscanner;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.wifi.ScanResult;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,32 +39,43 @@ public class WifiInfoAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.wifi_info_item, parent, false);
-            viewHolder = new ViewHolder(convertView.findViewById(R.id.wifi_name));
+            viewHolder = new ViewHolder(convertView.findViewById(R.id.wifi_name), convertView.findViewById(R.id.wifi_strength));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        TextView textView = convertView.findViewById(R.id.wifi_name);
         if(Objects.equals(data.get(position).SSID,""))
-            viewHolder.getTextView().setText("隐藏的WiFi" + "\t" + data.get(position).level);
+            viewHolder.getTv_ssid().setText("隐藏的WiFi");
         else
-            viewHolder.getTextView().setText(data.get(position).SSID + "\t" + data.get(position).level);
+            viewHolder.getTv_ssid().setText(data.get(position).SSID);
+        viewHolder.getTv_level().setText(String.valueOf(data.get(position).level));
         return convertView;
     }
 
     private static class ViewHolder {
-        private TextView textView;
+        private TextView tv_ssid;
+        private TextView tv_level;
 
-        private ViewHolder(TextView textView) {
-            this.textView = textView;
+        private ViewHolder(TextView textView, TextView tv_level) {
+            this.tv_ssid = textView;
+            this.tv_level = tv_level;
         }
 
-        public TextView getTextView() {
-            return textView;
+
+        public TextView getTv_ssid() {
+            return tv_ssid;
         }
 
-        public void setTextView(TextView textView) {
-            this.textView = textView;
+        public void setTv_ssid(TextView tv_ssid) {
+            this.tv_ssid = tv_ssid;
+        }
+
+        public TextView getTv_level() {
+            return tv_level;
+        }
+
+        public void setTv_level(TextView tv_level) {
+            this.tv_level = tv_level;
         }
     }
 

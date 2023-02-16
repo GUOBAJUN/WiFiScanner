@@ -35,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "无定位权限，无法获取WiFi信息", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (wifiMgr.isWifiEnabled() == false) {
+                Toast.makeText(MainActivity.this, "请打开WiFi开关以进行扫描", Toast.LENGTH_SHORT).show();
+                return;
+            }
             button_scan.setText("刷新");
             List<ScanResult> results = wifiMgr.getScanResults(); // 获取扫描结果
             results.sort(Comparator.comparingInt(a -> -a.level)); // 对结果按照信号由强到弱排序
