@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ public class wlan_detail_info extends AppCompatActivity {
     TextView realTime;
     private WifiManager wifiMgr;
     private boolean isUpdated = false;
+    @SuppressLint("SetTextI18n")
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -58,13 +60,14 @@ public class wlan_detail_info extends AppCompatActivity {
             }
         }
     };
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_wlan_info);
         Intent intent = getIntent();
         wifiLevel = findViewById(R.id.wifi_ssid);
-        ScanResult scanResult = (ScanResult) intent.getParcelableExtra("WiFi_Info");
+        ScanResult scanResult = intent.getParcelableExtra("WiFi_Info");
         String target_ssid = scanResult.SSID;
         wifiLevel.setText(target_ssid);
         wifiLevel = findViewById(R.id.wifi_level);
