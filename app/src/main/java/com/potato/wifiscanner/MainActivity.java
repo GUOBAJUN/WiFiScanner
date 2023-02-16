@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "无定位权限，无法获取WiFi信息", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (wifiMgr.isWifiEnabled() == false) {
+            if (!wifiMgr.isWifiEnabled()) {
                 Toast.makeText(MainActivity.this, "请打开WiFi开关以进行扫描", Toast.LENGTH_SHORT).show();
                 return;
             }
