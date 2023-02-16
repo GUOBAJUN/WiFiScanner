@@ -1,5 +1,6 @@
 package com.potato.wifiscanner;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class WifiInfoAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
@@ -53,8 +55,8 @@ public class WifiInfoAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        private TextView tv_ssid;
-        private TextView tv_level;
+        private final TextView tv_ssid;
+        private final TextView tv_level;
 
         private ViewHolder(TextView textView, TextView tv_level) {
             this.tv_ssid = textView;
@@ -66,17 +68,11 @@ public class WifiInfoAdapter extends BaseAdapter {
             return tv_ssid;
         }
 
-        public void setTv_ssid(TextView tv_ssid) {
-            this.tv_ssid = tv_ssid;
-        }
 
         public TextView getTv_level() {
             return tv_level;
         }
 
-        public void setTv_level(TextView tv_level) {
-            this.tv_level = tv_level;
-        }
     }
 
     public void clear() {
