@@ -1,8 +1,5 @@
 package com.potato.wifiscanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +9,12 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.util.Comparator;
 import java.util.List;
@@ -96,6 +95,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 为列表添加点击事件处理函数，切换到WiFi详情界面
-        wifi_list.get().setOnItemClickListener((parent, view, position, id) -> startActivity(new Intent(MainActivity.this, wlan_detail_info.class).putExtra("WiFi_Info",  (ScanResult)(wifi_list.get().getAdapter().getItem(position)))));
+        wifi_list.get().setOnItemClickListener((parent, view, position, id) -> startActivity(new Intent(MainActivity.this, InfoActivity.class).putExtra("WiFi_Info",  (ScanResult)(wifi_list.get().getAdapter().getItem(position)))));
     }
 }
