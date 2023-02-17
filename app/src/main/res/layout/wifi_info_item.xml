@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/full_names" />
+        tools:text="NUDT-WLAN" />
 
     <TextView
         android:id="@+id/wifi_strength"
@@ -28,6 +28,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/date/hhmm" />
+        tools:text="-19" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
