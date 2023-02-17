@@ -1,8 +1,5 @@
 package com.potato.wifiscanner;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -15,16 +12,22 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class wlan_detail_info extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class wlan_detail_info extends AppCompatActivity {
     TextView updateTime;
     private WifiManager wifiMgr;
     private boolean isUpdated = false;
+    long bootTime;
     @SuppressLint("SetTextI18n")
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -66,6 +70,7 @@ public class wlan_detail_info extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_wlan_info);
+        bootTime = System.currentTimeMillis()-SystemClock.elapsedRealtime();
         Intent intent = getIntent();
         wifiLevel = findViewById(R.id.wifi_ssid);
         ScanResult scanResult = intent.getParcelableExtra("WiFi_Info");
@@ -75,7 +80,7 @@ public class wlan_detail_info extends AppCompatActivity {
         wifiLevel.setText("level: " + scanResult.level);
         realTime = findViewById(R.id.real_time);
         updateTime = findViewById(R.id.update_time);
-        updateTime.setText("Last update: " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(new Date())));
+        updateTime.setText("Last update: " + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.CHINA).format(scanResult.timestamp/1000 + bootTime)));
 
         // 为“返回”按钮添加事件处理函数
         Button button_back = findViewById(R.id.button_back);
@@ -86,17 +91,15 @@ public class wlan_detail_info extends AppCompatActivity {
         registerReceiver(receiver, intentFilter);
 
         wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         //检查WiFi扫描列表是否更新
-        new Thread(() -> {
-            while (!isUpdated) {
-                isUpdated = true;
-                try {
-                    Thread.sleep(2000);
-                }catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        TimerTask checkUpdate = new TimerTask() {
+            @Override
+            public void run() {
+                if (!isUpdated)
+                    isUpdated = true;
             }
-        }).start();
+        };
 
         //时间更新
         Handler handler = new Handler(msg -> {
@@ -106,19 +109,18 @@ public class wlan_detail_info extends AppCompatActivity {
             }
             return false;
         });
-        new Thread(() -> {
-            while (true) {
+        TimerTask refresh = new TimerTask() {
+            @Override
+            public void run() {
                 Message msg = handler.obtainMessage();
                 msg.what = 1;
                 handler.sendMessage(msg);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
-        }).start();
-        
+        };
+
+        Timer timer =new Timer();
+        timer.schedule(refresh,0,1000);
+        timer.schedule(checkUpdate, 0, 2000);
     }
 
 }
